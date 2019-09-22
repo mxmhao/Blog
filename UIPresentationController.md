@@ -137,3 +137,5 @@ self.present(vc, animated: true)
 你可以打印XMAlertPresentationController中的presentedViewController和presentingViewController看看是什么类型
 ## 贤者模式
 写完了，看着是不是很简单，把上面的两个类直接考到文件里就可使用，下面是效果图，[源码](https://github.com/mxmhao/PresentationController)
+![image1](/UIPresentationController-image1.png)
+![image2](/UIPresentationController-image2.png)
