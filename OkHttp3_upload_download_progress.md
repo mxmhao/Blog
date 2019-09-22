@@ -1,10 +1,9 @@
-#使用OkHttp3下载、上传文件并且监听进度，极简、高复用
+# OkHttp3上传下载文件，监听进度，极简、高复用
 在网上看了很多关使用OkHttp3下载和上传文件监听进度的贴子，千篇一律，用起来还麻烦，所以本人仔仔细细的研究了一下OkHttp3和Okio的API，发现可以充分利用Okio来简化进度监听，话不多说，直接上[源码](https://github.com/mxmhao/Android_App_Template/blob/master/app/src/main/java/template/OkHttp3UploadDownload.java):    
 下载：
 ```
 /**
  * 此类使用来包装Response.body().source()
- * 若是要分段并发下载单个文件，请包装Response.body().byteStream()
  * Source来自Okio的接口
  */
 class ProgressSource implements Source, Progress {
@@ -20,7 +19,7 @@ class ProgressSource implements Source, Progress {
 
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
-        long readCount = source.read(sink, byteCount);
+        long readCount = source.read(sink, byteCount);//从网络中读取
         if (readCount != -1) loadedBytes += readCount;//读取到的就是已下载的，划重点
         return readCount;
     }
@@ -63,6 +62,7 @@ private void download() {
                     ProgressTask task = new ProgressTask(source);
                     timer.schedule(task, 1000, 1000);//定时获取进度和速度
                     //文件保存
+		    //多并发用RandomAccessFile
                     File file = new File("/sdcard/xxx.mp4");//文件存放位置
                     file.createNewFile();
                     BufferedSink sink = Okio.buffer(Okio.sink(file));//断点续传Okio.appendingSink(file)
